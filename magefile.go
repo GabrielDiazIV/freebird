@@ -43,6 +43,21 @@ func (Run) Service(name string) error {
 	return sh.RunV("go", "run", servicePath)
 }
 
+func (Run) DataDB() error {
+	if err := sh.RunV("docker", "build", "-t", "freebird/datadb", "-f", "./db/data/Dockerfile", "./db/data/"); err != nil {
+		return err
+	}
+
+	sh.RunV("docker", "container", "stop", "freebird_data_db")
+	sh.RunV("docker", "container", "rm", "freebird_data_db")
+
+	if err := sh.RunV("docker", "run", "-p", "5432:5432", "-d", "--name=freebird_data_db", "freebird/datadb"); err != nil {
+		return err
+	}
+
+	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", "postgres://postgres:asdfasdf@localhost:5432/postgres?sslmode=disable", "up")
+}
+
 func buildRoot() error {
 	return sh.RunV("docker", "build", "--no-cache", "--file", "Dockerfile.root", "--tag", genURL("root"), ".")
 }
