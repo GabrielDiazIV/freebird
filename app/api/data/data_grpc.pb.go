@@ -4,7 +4,7 @@
 // - protoc             v3.20.3
 // source: app/api/proto/data.proto
 
-package freebird
+package data
 
 import (
 	context "context"
