@@ -30,6 +30,10 @@ func (Generate) SQL() error {
 	return sh.RunV("sqlc", "generate", "-f", "db/sqlc.yaml")
 }
 
+func (Generate) GRPC(name string) error {
+	return sh.RunV("protoc", "--go_out=.", "--go-grpc_out=.", fmt.Sprintf("./app/api/proto/%s.proto", name))
+}
+
 func (Run) Service(name string) error {
 	if err := godotenv.Load(); err != nil {
 		return err

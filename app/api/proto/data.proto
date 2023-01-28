@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "app/api/freebird";
+
+package data;
+
+service Data {
+	rpc TweetStream(TweetStreamRequest) returns (stream TweetStreamResponse) {}
+
+	rpc EntityData(EntityRequest) returns (EntityResponse) {}
+}
+
+enum FreebirdEntity {
+	SHILL = 0;
+	COMPANY = 1;
+}
+
+message TweetStreamRequest {
+}
+
+message TweetStreamResponse {
+	string entity_name = 1;
+	float entity_sentiment = 2;
+	string entity_image = 3;
+	FreebirdEntity entity_type = 4;
+}
+
+message EntityRequest {
+	FreebirdEntity entity_type = 1;
+	string entity_name = 2;
+}
+
+message EntityResponse {
+	string gaming = 1;
+}
