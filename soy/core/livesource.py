@@ -46,7 +46,8 @@ class LiveSource:
                 "add": self._rules,
         }
         res = requests.post("https://api.twitter.com/2/tweets/search/stream/rules", json=rules_payload, headers=self.__auth())
-        if res.status_code != 200:
+        print(res.status_code)
+        if res.status_code != 201:
             raise Exception(f"failed to upload new rules: {res.text}")
 
     def add_rule(self, rule):

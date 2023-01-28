@@ -26,4 +26,5 @@ type Tweet struct {
 	AuthorUsername sql.NullString
 	PostTime       interface{}
 	Score          sql.NullFloat64
+	Certainty      sql.NullFloat64
 }

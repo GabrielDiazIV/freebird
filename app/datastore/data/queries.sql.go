@@ -47,7 +47,7 @@ func (q *Queries) GetBirds(ctx context.Context) ([]*Bird, error) {
 }
 
 const getTweets = `-- name: GetTweets :many
-SELECT body, bird_fk, author_name, author_username, post_time, score FROM tweets WHERE bird_fk = $1
+SELECT body, bird_fk, author_name, author_username, post_time, score, certainty FROM tweets WHERE bird_fk = $1
 `
 
 func (q *Queries) GetTweets(ctx context.Context, birdFk sql.NullInt32) ([]*Tweet, error) {
@@ -66,6 +66,7 @@ func (q *Queries) GetTweets(ctx context.Context, birdFk sql.NullInt32) ([]*Tweet
 			&i.AuthorUsername,
 			&i.PostTime,
 			&i.Score,
+			&i.Certainty,
 		); err != nil {
 			return nil, err
 		}
