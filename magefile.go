@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	ProjectName = "template"
+	ProjectName = "Freebird"
 )
 
 type (

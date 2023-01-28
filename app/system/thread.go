@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"template/app/system/log"
+	"Freebird/app/system/log"
 )
 
 type globalSigHandler struct {

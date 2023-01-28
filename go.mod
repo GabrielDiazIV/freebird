@@ -1,4 +1,4 @@
-module template
+module Freebird
 
 go 1.19
 
