@@ -1,1 +1,4 @@
 go.sum
+.gitignore
+*.env
+*__pycache__*
