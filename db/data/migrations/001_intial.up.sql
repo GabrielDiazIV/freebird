@@ -2,15 +2,16 @@ CREATE TABLE birds(
 	id SERIAL PRIMARY KEY,
 	name TEXT,
 	entity_type INT,
-	bird_fk INT REFRENCES birds(uuid),
+	bird_fk INT REFERENCES birds(id),
 	score FLOAT,
-	n_tweets INT,
+	n_positive INT,
+	n_negative INT,
 	img_url TEXT
 );
 
 CREATE TABLE tweets(
 	body TEXT,
-	bird_fk INT REFRENCES birds(uuid),
+	bird_fk INT REFERENCES birds(id),
 	author_name TEXT,
 	author_username TEXT,
 	post_time DATETIME,

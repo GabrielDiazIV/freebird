@@ -1,12 +1,12 @@
 version: "2"
 sql:
-  - schema: "<path to migrations folder>"
-    queries: "<path to queries folder>"
+  - schema: "./db/data/migrations/001_intial.up.sql"
+    queries: "./db/data/queries.sql"
     engine: "postgresql"
     gen:
       go:
-        package: "<package>"
-        out: "app/datastore/<package>"
+        package: "data"
+        out: "app/datastore/data"
         sql_package: "pgx/v5"
         emit_result_struct_pointers: true
         emit_params_struct_pointers: true
