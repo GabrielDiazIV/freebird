@@ -11,6 +11,7 @@ def create_connection():
             database=os.getenv("POSTGRES_NAME"),
             user=os.getenv("POSTGRES_USER"),
             password=os.getenv("POSTGRES_PASS"),
+            port=os.getenv("POSTGRES_PORT"),
             cursor_factory=RealDictCursor
         )
         print("Connected to DB successfully")

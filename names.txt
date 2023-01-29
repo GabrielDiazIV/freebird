@@ -1,16 +1,20 @@
-from core.token import get_token
-from core.livesource import LiveSource
-import core.db as db
-from dotenv import load_dotenv
-from classifier import process_tweet
+Elon Musk (Tesla)
+Sam Bankman-Freid (FTX)
+Kanye West
+Andrew Tate
+Mark Zuckerburg (Facebook/Meta)
+Jeff Bezos (Amazon)
+Jack Dorsey
+Tim Cook (Apple)
+Lisa Su (AMD)
+Sam Altman (OpenAI)
+Sundar Pichai (Google)
+Bill Gates (Microsoft)
+Joe Rogan (JRE)
 
-def main():
-    load_dotenv()
-    connection = db.create_connection()
-    token = get_token()
-    ls = LiveSource(token)
-    # https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/integrate/build-a-rule
-    ls.add_rule("-is:retweet -from:elonmusk (\"Elon Musk\" OR #ElonMusk OR @elonmusk)", "Elon Musk")
+INSERT INTO birds(name,entity_type,bird_fk,score,n_positive,n_negative,img_url) VALUES ('Andrew Tate', 0, 4, 0.0, 0, 0, 'https://cdn.vox-cdn.com/thumbor/RcAdlMhw-adDQnJiVWKRPUSP10M=/0x0:2024x1038/1200x800/filters:focal(989x320:1311x642)/cdn.vox-cdn.com/uploads/chorus_image/image/71278865/Screen_Shot_2022_08_23_at_4.22.21_PM.0.png');
+
+ls.add_rule("-is:retweet -from:elonmusk (\"Elon Musk\" OR #ElonMusk OR @elonmusk)", "Elon Musk")
     ls.add_rule("-is:retweet -from:SBF_FTX (\"Sam Bankman-Fried\" OR @SBF_FTX)", "Sam Bankman-Fried")
     ls.add_rule("-is:retweet (\"Kanye West\" OR #KanyeWest)", "Kanye West")
     ls.add_rule("-is:retweet -from:cobratate (\"Andrew Tate\" OR #AndrewTate OR @cobratate)", "Andrew Tate")
@@ -32,8 +36,3 @@ def main():
     ls.add_rule("-is:retweet -from:OpenAI (\"OpenAI\" OR #OpenAI OR @OpenAI)", "OpenAI")
     ls.add_rule("-is:retweet -from:Google (\"Google\" OR #Google OR @Google)", "Google")
     ls.add_rule("-is:retweet -from:Microsoft (\"Microsoft\" OR #Microsoft OR @Microsoft)", "Microsoft")
-    ls.add_rule("-is:retweet -from:goblinx64 (\"Daniel Kasabov\" OR #DanielKasabov OR @goblinx64)", "Daniel Kasabov")
-    ls.start(process_tweet,connection)
-
-if __name__ == "__main__":
-    main()

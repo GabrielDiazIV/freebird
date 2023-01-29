@@ -28,6 +28,7 @@ def process_tweet(tweet, connection):
     bird = db.query(f"SELECT * FROM birds WHERE name = '{tweet_object.rule_tag}';",connection)[0]
     # sanitize single quotes from tweet body
     tweet_object.body = tweet_object.body.replace("'","''")
+    tweet_object.author_name = tweet_object.author_name.replace("'","''")
     # insert tweet into tweets table    
     db.update(f"INSERT INTO tweets(body,bird_fk,author_name,author_username,post_time,score,certainty) VALUES ('{tweet_object.body}', '{bird['id']}', '{tweet_object.author_name}', '{tweet_object.author_username}', '{tweet_object.post_time}',{tweet_object.score},{tweet_object.certainty});", connection)
     # increment positive/negative sums
