@@ -22,14 +22,11 @@ type NotifySrvc struct {
 }
 
 func GetNotify() *NotifySrvc {
-	notifyInst = &NotifySrvc{
-		pool: domain.NewPool(),
-	}
-
 	notifyOnce.Do(func() {
+		notifyInst = &NotifySrvc{
+			pool: domain.NewPool(),
+		}
 		c, err := data.RwInstancePool().Acquire(context.Background())
-		defer c.Release()
-
 		if err != nil {
 			panic(err)
 		}
@@ -54,6 +51,7 @@ func (n *NotifySrvc) Remove(userChan chan<- *data.Bird) {
 }
 
 func notifyLoop(c *pgxpool.Conn) {
+	defer c.Release()
 	for {
 		msg, err := c.Conn().WaitForNotification(context.Background())
 		if err != nil {
