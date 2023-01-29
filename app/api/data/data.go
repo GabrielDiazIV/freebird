@@ -1,9 +1,10 @@
 package data
 
 import (
+	"context"
+
 	"Freebird/app/datastore/data"
 	"Freebird/app/services/notify"
-	"context"
 )
 
 type server struct {
@@ -12,19 +13,9 @@ type server struct {
 }
 
 func (s *server) TweetStream(req *TweetStreamRequest, server Data_TweetStreamServer) error {
-	userChan := make(chan *data.Tweet)
+	userChan := make(chan *data.Bird)
 	s.n.Subscribe(userChan)
 
-	/*
-		for tweet := range userChan {
-			server.Send(&TweetStreamResponse{
-				EntityName:      tweet.AuthorName.String,
-				EntitySentiment: tweet.,
-				EntityImage:     "",
-				EntityType:      0,
-			})
-		}
-	*/
 	return nil
 }
 

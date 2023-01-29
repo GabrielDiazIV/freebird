@@ -5,6 +5,7 @@ package main
 import (
 	"Freebird/app/system/env"
 	"fmt"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/magefile/mage/mg"
@@ -67,6 +68,8 @@ func (Run) DataDB() error {
 	if err := sh.RunV("docker", "run", "-p", "5432:5432", "-d", "--name=freebird_data_db", "freebird/datadb"); err != nil {
 		return err
 	}
+
+	time.Sleep(5 * time.Second)
 
 	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", "postgres://postgres:asdfasdf@localhost:5432/postgres?sslmode=disable", "up")
 }
