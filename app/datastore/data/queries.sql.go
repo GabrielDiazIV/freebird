@@ -7,7 +7,6 @@ package data
 
 import (
 	"context"
-	"database/sql"
 )
 
 const getBirds = `-- name: GetBirds :many
@@ -47,10 +46,10 @@ func (q *Queries) GetBirds(ctx context.Context) ([]*Bird, error) {
 }
 
 const getTweets = `-- name: GetTweets :many
-SELECT body, bird_fk, author_name, author_username, post_time, score FROM tweets WHERE bird_fk = $1
+SELECT id, body, bird_fk, author_name, author_username, post_time, score FROM tweets WHERE bird_fk = $1
 `
 
-func (q *Queries) GetTweets(ctx context.Context, birdFk sql.NullInt32) ([]*Tweet, error) {
+func (q *Queries) GetTweets(ctx context.Context, birdFk int32) ([]*Tweet, error) {
 	rows, err := q.db.QueryContext(ctx, getTweets, birdFk)
 	if err != nil {
 		return nil, err
@@ -60,6 +59,7 @@ func (q *Queries) GetTweets(ctx context.Context, birdFk sql.NullInt32) ([]*Tweet
 	for rows.Next() {
 		var i Tweet
 		if err := rows.Scan(
+			&i.ID,
 			&i.Body,
 			&i.BirdFk,
 			&i.AuthorName,

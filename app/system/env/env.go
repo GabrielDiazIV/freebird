@@ -7,7 +7,11 @@ import (
 )
 
 type Config struct {
-	SAMPLE_VARIABLE string `required:"true" env:"_"`
+	POSTGRES_USER string `required:"true" env:"POSTGRES_USER"`
+	POSTGRES_PASS string `required:"true" env:"POSTGRES_PASS"`
+	POSTGRES_HOST string `required:"true" env:"POSTGRES_HOST"`
+	POSTGRES_PORT string `required:"true" env:"POSTGRES_PORT"`
+	POSTGRES_NAME string `required:"true" env:"POSTGRES_PORT"`
 }
 
 var (
@@ -17,7 +21,8 @@ var (
 
 func GetConfig() *Config {
 	configOnce.Do(func() {
-		if err := configor.Load(&configInst); err != nil {
+		configInst = &Config{}
+		if err := configor.Load(configInst); err != nil {
 			panic(err)
 		}
 	})

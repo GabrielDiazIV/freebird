@@ -5,25 +5,26 @@
 package data
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Bird struct {
 	ID         int32
-	Name       sql.NullString
-	EntityType sql.NullInt32
-	BirdFk     sql.NullInt32
-	Score      sql.NullFloat64
-	NPositive  sql.NullInt32
-	NNegative  sql.NullInt32
-	ImgUrl     sql.NullString
+	Name       string
+	EntityType int32
+	BirdFk     int32
+	Score      float64
+	NPositive  int32
+	NNegative  int32
+	ImgUrl     string
 }
 
 type Tweet struct {
-	Body           sql.NullString
-	BirdFk         sql.NullInt32
-	AuthorName     sql.NullString
-	AuthorUsername sql.NullString
-	PostTime       interface{}
-	Score          sql.NullFloat64
+	ID             int32
+	Body           string
+	BirdFk         int32
+	AuthorName     string
+	AuthorUsername string
+	PostTime       time.Time
+	Score          float64
 }
