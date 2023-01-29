@@ -1,4 +1,5 @@
 from textblob import TextBlob
+from core.tweet import Tweet
 import re
 
 def clean_tweet(tweet):
@@ -17,6 +18,7 @@ def clean_tweet(tweet):
 def classify_tweet(tweet):
     tweet_text = tweet['data']['text']
     blob = TextBlob(clean_tweet(tweet_text))
-    print(clean_tweet(tweet_text))
-    print(blob.sentiment.polarity)
-    print(blob.sentiment.subjectivity)
+    # create tweet object 
+    tweet_object = Tweet(tweet['data']['id'],tweet['data']['text'],tweet['includes']['users'][0]['name'],tweet['includes']['users'][0]['username'],tweet['data']['created_at'],tweet['matching_rules'][0]['tag'],blob.polarity,blob.subjectivity)
+    tweet_object.print()
+    

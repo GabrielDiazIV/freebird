@@ -8,7 +8,7 @@ def main():
     token = get_token()
     ls = LiveSource(token)
     # https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/integrate/build-a-rule
-    ls.add_rule("ryan kutz")
+    ls.add_rule(" -is:retweet -from:elonmusk (Elon Musk OR #ElonMusk OR @elonmusk)", "Elon Musk")
     ls.start(classify_tweet)
 
 if __name__ == "__main__":
