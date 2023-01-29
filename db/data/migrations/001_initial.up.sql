@@ -4,7 +4,8 @@ CREATE TABLE birds(
 	entity_type INT NOT NULL,
 	bird_fk INT NOT NULL REFERENCES birds(id),
 	score FLOAT NOT NULL,
-	n_tweets INT NOT NULL,
+	n_positive INT NOT NULL,
+	n_negative INT NOT NULL,
 	img_url TEXT NOT NULL
 );
 
@@ -15,7 +16,8 @@ CREATE TABLE tweets(
 	author_name TEXT NOT NULL,
 	author_username TEXT NOT NULL,
 	post_time TIMESTAMP WITH TIME ZONE NOT NULL,
-	score FLOAT NOT NULL
+	score FLOAT NOT NULL,
+	certainty FLOAT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION notify_tweet() RETURNS TRIGGER AS $$
@@ -37,7 +39,7 @@ CREATE OR REPLACE FUNCTION notify_tweet() RETURNS TRIGGER AS $$
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER tweets_notify_event
-	AFTER INSERT ON tweets
+	AFTER UPDATE ON birds
 	FOR EACH ROW EXECUTE PROCEDURE notify_tweet();
 
 LISTEN tweet_stream;

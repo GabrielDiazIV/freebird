@@ -36,7 +36,7 @@ func (Generate) GRPC(name string) error {
 }
 
 func (Run) Service(name string) error {
-	if err := godotenv.Load(); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		return err
 	}
 
