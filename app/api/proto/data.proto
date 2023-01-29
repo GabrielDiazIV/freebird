@@ -21,6 +21,10 @@ message TweetStreamRequest {
 message TweetStreamResponse {
 	FreebirdEntity entity_type = 1;
 	string entity_name = 2;
+	float score = 3;
+	int32 positive = 4;
+	int32 negative = 5;
+	string image_url = 6;
 }
 
 message EntityRequest {
