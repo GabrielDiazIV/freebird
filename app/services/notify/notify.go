@@ -21,7 +21,7 @@ type NotifySrvc struct {
 	pool *domain.UserPool
 }
 
-func Notify() *NotifySrvc {
+func GetNotify() *NotifySrvc {
 	notifyInst = &NotifySrvc{
 		pool: domain.NewPool(),
 	}

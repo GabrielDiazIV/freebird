@@ -61,7 +61,7 @@ class LiveSource:
 
         self._rules.append({ "value": rule, "tag": tag})
 
-    def start(self, classify):
+    def start(self, classify, connection):
         self.__submit_rules()
         print(f"a total of {len(self._rules)} were submitted")
 
@@ -69,6 +69,6 @@ class LiveSource:
         for res in stream.iter_lines():
             if res:
                 res_json = json.loads(res)
-                classify(res_json)
+                classify(res_json, connection)
 
 

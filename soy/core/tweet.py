@@ -4,7 +4,7 @@ class Tweet:
         self.body = body
         self.author_name = author_name
         self.author_username = author_username
-        self.created_at = created_at
+        self.post_time = created_at
         self.rule_tag = rule_tag
         self.score = score
         self.certainty = certainty
@@ -14,7 +14,7 @@ class Tweet:
         print("Body: " + self.body)
         print("Author Name: " + self.author_name)
         print("Author Username: " + self.author_username)
-        print("Created At: " + self.created_at)
+        print("Created At: " + self.post_time)
         print("Matching Rule Tag: " + self.rule_tag)
         print("Sentiment Score: " + str(self.score))
         print("Sentiment Certainty: " + str(self.certainty))
