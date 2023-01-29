@@ -9,23 +9,23 @@ import (
 )
 
 type Bird struct {
-	ID         int32
-	Name       string
-	EntityType int32
-	BirdFk     int32
-	Score      float64
-	NPositive  int32
-	NNegative  int32
-	ImgUrl     string
+	ID         int32   `json:"id"`
+	Name       string  `json:"name"`
+	EntityType int32   `json:"entity_type"`
+	BirdFk     int32   `json:"bird_fk"`
+	Score      float64 `json:"score"`
+	NPositive  int32   `json:"n_positive"`
+	NNegative  int32   `json:"n_negative"`
+	ImgUrl     string  `json:"img_url"`
 }
 
 type Tweet struct {
-	ID             int32
-	Body           string
-	BirdFk         int32
-	AuthorName     string
-	AuthorUsername string
-	PostTime       time.Time
-	Score          float64
-	Certainty      float64
+	ID             int32     `json:"id"`
+	Body           string    `json:"body"`
+	BirdFk         int32     `json:"bird_fk"`
+	AuthorName     string    `json:"author_name"`
+	AuthorUsername string    `json:"author_username"`
+	PostTime       time.Time `json:"post_time"`
+	Score          float64   `json:"score"`
+	Certainty      float64   `json:"certainty"`
 }

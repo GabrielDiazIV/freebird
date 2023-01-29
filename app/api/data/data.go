@@ -6,6 +6,7 @@ import (
 
 	"Freebird/app/datastore/data"
 	"Freebird/app/services/notify"
+	"Freebird/app/system/log"
 
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -55,6 +56,7 @@ func (s *server) TweetStream(req *TweetStreamRequest, server Data_TweetStreamSer
 	}()
 
 	for bird := range userChan {
+		log.Info("sending: %+v\n", bird)
 		server.Send(b2b(bird))
 	}
 
