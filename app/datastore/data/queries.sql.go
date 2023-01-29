@@ -9,12 +9,32 @@ import (
 	"context"
 )
 
+const getBird = `-- name: GetBird :one
+SELECT id, name, entity_type, bird_fk, score, n_positive, n_negative, img_url FROM birds WHERE id = $1
+`
+
+func (q *Queries) GetBird(ctx context.Context, id int32) (*Bird, error) {
+	row := q.db.QueryRow(ctx, getBird, id)
+	var i Bird
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.EntityType,
+		&i.BirdFk,
+		&i.Score,
+		&i.NPositive,
+		&i.NNegative,
+		&i.ImgUrl,
+	)
+	return &i, err
+}
+
 const getBirds = `-- name: GetBirds :many
 SELECT id, name, entity_type, bird_fk, score, n_positive, n_negative, img_url FROM birds ORDER BY score
 `
 
 func (q *Queries) GetBirds(ctx context.Context) ([]*Bird, error) {
-	rows, err := q.db.QueryContext(ctx, getBirds)
+	rows, err := q.db.Query(ctx, getBirds)
 	if err != nil {
 		return nil, err
 	}
@@ -36,9 +56,6 @@ func (q *Queries) GetBirds(ctx context.Context) ([]*Bird, error) {
 		}
 		items = append(items, &i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -50,7 +67,7 @@ SELECT id, body, bird_fk, author_name, author_username, post_time, score, certai
 `
 
 func (q *Queries) GetTweets(ctx context.Context, birdFk int32) ([]*Tweet, error) {
-	rows, err := q.db.QueryContext(ctx, getTweets, birdFk)
+	rows, err := q.db.Query(ctx, getTweets, birdFk)
 	if err != nil {
 		return nil, err
 	}
@@ -71,9 +88,6 @@ func (q *Queries) GetTweets(ctx context.Context, birdFk int32) ([]*Tweet, error)
 			return nil, err
 		}
 		items = append(items, &i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

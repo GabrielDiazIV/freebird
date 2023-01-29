@@ -9,7 +9,7 @@ import (
 	"Freebird/app/domain"
 	"Freebird/app/system/log"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var (
@@ -28,6 +28,8 @@ func GetNotify() *NotifySrvc {
 
 	notifyOnce.Do(func() {
 		c, err := data.RwInstancePool().Acquire(context.Background())
+		defer c.Release()
+
 		if err != nil {
 			panic(err)
 		}
@@ -60,7 +62,6 @@ func notifyLoop(c *pgxpool.Conn) {
 		}
 
 		bird := data.Bird{}
-		log.Info("%s", string(msg.Payload))
 		if err := json.Unmarshal([]byte(msg.Payload), &bird); err != nil {
 			log.Error("%v", err)
 			continue

@@ -23,8 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataClient interface {
 	TweetStream(ctx context.Context, in *TweetStreamRequest, opts ...grpc.CallOption) (Data_TweetStreamClient, error)
-	BirdData(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Bird, error)
-	AllBirds(ctx context.Context, in *BirdsRequest, opts ...grpc.CallOption) (*Birds, error)
+	GetBird(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Bird, error)
+	GetAllBirds(ctx context.Context, in *BirdsRequest, opts ...grpc.CallOption) (*Birds, error)
+	GetBirdTweets(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Tweets, error)
 }
 
 type dataClient struct {
@@ -67,18 +68,27 @@ func (x *dataTweetStreamClient) Recv() (*Bird, error) {
 	return m, nil
 }
 
-func (c *dataClient) BirdData(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Bird, error) {
+func (c *dataClient) GetBird(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Bird, error) {
 	out := new(Bird)
-	err := c.cc.Invoke(ctx, "/data.Data/BirdData", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/data.Data/GetBird", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *dataClient) AllBirds(ctx context.Context, in *BirdsRequest, opts ...grpc.CallOption) (*Birds, error) {
+func (c *dataClient) GetAllBirds(ctx context.Context, in *BirdsRequest, opts ...grpc.CallOption) (*Birds, error) {
 	out := new(Birds)
-	err := c.cc.Invoke(ctx, "/data.Data/AllBirds", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/data.Data/GetAllBirds", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dataClient) GetBirdTweets(ctx context.Context, in *BirdRequest, opts ...grpc.CallOption) (*Tweets, error) {
+	out := new(Tweets)
+	err := c.cc.Invoke(ctx, "/data.Data/GetBirdTweets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,8 +100,9 @@ func (c *dataClient) AllBirds(ctx context.Context, in *BirdsRequest, opts ...grp
 // for forward compatibility
 type DataServer interface {
 	TweetStream(*TweetStreamRequest, Data_TweetStreamServer) error
-	BirdData(context.Context, *BirdRequest) (*Bird, error)
-	AllBirds(context.Context, *BirdsRequest) (*Birds, error)
+	GetBird(context.Context, *BirdRequest) (*Bird, error)
+	GetAllBirds(context.Context, *BirdsRequest) (*Birds, error)
+	GetBirdTweets(context.Context, *BirdRequest) (*Tweets, error)
 	mustEmbedUnimplementedDataServer()
 }
 
@@ -102,11 +113,14 @@ type UnimplementedDataServer struct {
 func (UnimplementedDataServer) TweetStream(*TweetStreamRequest, Data_TweetStreamServer) error {
 	return status.Errorf(codes.Unimplemented, "method TweetStream not implemented")
 }
-func (UnimplementedDataServer) BirdData(context.Context, *BirdRequest) (*Bird, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BirdData not implemented")
+func (UnimplementedDataServer) GetBird(context.Context, *BirdRequest) (*Bird, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBird not implemented")
 }
-func (UnimplementedDataServer) AllBirds(context.Context, *BirdsRequest) (*Birds, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllBirds not implemented")
+func (UnimplementedDataServer) GetAllBirds(context.Context, *BirdsRequest) (*Birds, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllBirds not implemented")
+}
+func (UnimplementedDataServer) GetBirdTweets(context.Context, *BirdRequest) (*Tweets, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBirdTweets not implemented")
 }
 func (UnimplementedDataServer) mustEmbedUnimplementedDataServer() {}
 
@@ -142,38 +156,56 @@ func (x *dataTweetStreamServer) Send(m *Bird) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Data_BirdData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Data_GetBird_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(BirdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DataServer).BirdData(ctx, in)
+		return srv.(DataServer).GetBird(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/data.Data/BirdData",
+		FullMethod: "/data.Data/GetBird",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServer).BirdData(ctx, req.(*BirdRequest))
+		return srv.(DataServer).GetBird(ctx, req.(*BirdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Data_AllBirds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Data_GetAllBirds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(BirdsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DataServer).AllBirds(ctx, in)
+		return srv.(DataServer).GetAllBirds(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/data.Data/AllBirds",
+		FullMethod: "/data.Data/GetAllBirds",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DataServer).AllBirds(ctx, req.(*BirdsRequest))
+		return srv.(DataServer).GetAllBirds(ctx, req.(*BirdsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Data_GetBirdTweets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BirdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DataServer).GetBirdTweets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/data.Data/GetBirdTweets",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DataServer).GetBirdTweets(ctx, req.(*BirdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -186,12 +218,16 @@ var Data_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*DataServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "BirdData",
-			Handler:    _Data_BirdData_Handler,
+			MethodName: "GetBird",
+			Handler:    _Data_GetBird_Handler,
 		},
 		{
-			MethodName: "AllBirds",
-			Handler:    _Data_AllBirds_Handler,
+			MethodName: "GetAllBirds",
+			Handler:    _Data_GetAllBirds_Handler,
+		},
+		{
+			MethodName: "GetBirdTweets",
+			Handler:    _Data_GetBirdTweets_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

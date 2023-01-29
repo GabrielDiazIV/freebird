@@ -30,7 +30,7 @@ func genURL(name string) string {
 }
 
 func (Generate) SQL() error {
-	return sh.RunV("sqlc", "generate", "-f", "db/sqlc.yaml")
+	return sh.RunV("sqlc", "generate", "-f", "sqlc.yaml")
 }
 
 func (Generate) GRPC(name string) error {
@@ -90,7 +90,7 @@ func buildRoot() error {
 
 func (Build) Service(name string) error {
 	url := genURL(name)
-	return sh.RunV("docker", "build", "--no-cache", "--tag", url, "--file", fmt.Sprintf("app/cmd/%s/Dockerfile", name), ".")
+	return sh.RunV("docker", "build", "--no-cache", "--tag", url, "--file", fmt.Sprintf("app/cmd/%s/Dockerfile", name), "--progress=plain", ".")
 }
 
 func (Run) Image(name string) error {

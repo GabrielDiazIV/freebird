@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var (
@@ -17,8 +17,8 @@ var (
 func RwInstancePool() *pgxpool.Pool {
 	dbOnce.Do(func() {
 		connString := createConnectionString()
-		fmt.Println(connString)
-		db, err := pgxpool.New(context.Background(), connString)
+
+		db, err := pgxpool.Connect(context.Background(), connString)
 		if err != nil {
 			panic(err)
 		}

@@ -1,25 +1,29 @@
 syntax = "proto3";
 
 option go_package = "app/api/data";
+import "google/protobuf/timestamp.proto";
 
 package data;
 
 service Data {
     rpc TweetStream(TweetStreamRequest) returns (stream Bird) {}
 
-    rpc BirdData(BirdRequest) returns (Bird) {}
-    rpc AllBirds(BirdsRequest) returns (Birds) {}
+    rpc GetBird(BirdRequest) returns (Bird) {}
+    rpc GetAllBirds(BirdsRequest) returns (Birds) {}
+    rpc GetBirdTweets(BirdRequest) returns (Tweets) {}
 }
 
-enum Bird_Type {
+enum FreebirdEntity {
     SHILL = 0;
     COMPANY = 1;
 }
 
+message Tweets { repeated Tweet tweets = 1; }
+
 message Bird {
     int32 id = 1;
     string name = 2;
-    Bird_Type type = 3;
+    FreebirdEntity entity_type = 3;
     int32 bird_fk = 4;
     float score = 5;
     int32 n_positive = 6;
@@ -27,9 +31,18 @@ message Bird {
     string img_url = 8;
 }
 
+message Tweet {
+    int32 bird_fk = 1;
+    string body = 2;
+    string author_name = 3;
+    string author_username = 4;
+    google.protobuf.Timestamp post_time = 5;
+    float score = 6;
+    float certainty = 7;
+}
 message Birds { repeated Bird birds = 1; }
 
 message TweetStreamRequest {}
 message BirdsRequest {}
 
-message BirdRequest { int32 bird_id = 1; }
+message BirdRequest { int32 id = 1; }
