@@ -7,6 +7,6 @@ sql:
       go:
         package: "data"
         out: "app/datastore/data"
-        sql_package: "pgx/v5"
+        sql_package: "pgx/v4"
         emit_result_struct_pointers: true
         emit_params_struct_pointers: true

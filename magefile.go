@@ -3,6 +3,7 @@
 package main
 
 import (
+	"Freebird/app/system/env"
 	"fmt"
 	"time"
 
@@ -12,11 +13,12 @@ import (
 )
 
 const (
-	ProjectName = "Freebird"
+	ProjectName = "freebird"
 )
 
 type (
 	Run      mg.Namespace
+	Migrate  mg.Namespace
 	Test     mg.Namespace
 	Build    mg.Namespace
 	Util     mg.Namespace
@@ -28,11 +30,21 @@ func genURL(name string) string {
 }
 
 func (Generate) SQL() error {
-	return sh.RunV("sqlc", "generate", "-f", "db/sqlc.yaml")
+	return sh.RunV("sqlc", "generate", "-f", "sqlc.yaml")
 }
 
 func (Generate) GRPC(name string) error {
 	return sh.RunV("protoc", "--go_out=.", "--go-grpc_out=.", fmt.Sprintf("./app/api/proto/%s.proto", name))
+}
+
+func (Migrate) DataDB() error {
+	if err := godotenv.Load(".env"); err != nil {
+		return err
+	}
+
+	c := env.GetConfig()
+	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/postgres?sslmode=disable", c.POSTGRES_USER, c.POSTGRES_PASS, c.POSTGRES_HOST, c.POSTGRES_PORT)
+	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", connString, "up")
 }
 
 func (Run) Service(name string) error {
@@ -61,19 +73,42 @@ func (Run) DataDB() error {
 	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", "postgres://postgres:asdfasdf@localhost:5432/postgres?sslmode=disable", "up")
 }
 
+func (Run) Envoy() error {
+	if err := sh.RunV("docker", "build", "-t", "freebird/envoy", "-f", "./Dockerfile.envoy", "."); err != nil {
+		return err
+	}
+
+	sh.RunV("docker", "container", "stop", "freebird_envoy")
+	sh.RunV("docker", "container", "rm", "freebird_envoy")
+
+	return sh.RunV("docker", "run", "-p", "9901:9901", "-p", "8080:8080", "--net", "host", "--name=freebird_envoy", "freebird/envoy" /*, "-c", "/etc/envoy/envoy.yaml", "-l", "off", "--component-log-level", "upstream:debug,connection:trace"*/)
+}
+
 func buildRoot() error {
 	return sh.RunV("docker", "build", "--no-cache", "--file", "Dockerfile.root", "--tag", genURL("root"), ".")
 }
 
 func (Build) Service(name string) error {
-	mg.Deps(buildRoot)
 	url := genURL(name)
-	return sh.RunV("docker", "build", "--no-cache", "--tag", url, "--file", fmt.Sprintf("app/cmd/%s/Dockerfile", name), ".")
+	return sh.RunV("docker", "build", "--no-cache", "--tag", url, "--file", fmt.Sprintf("app/cmd/%s/Dockerfile", name), "--progress=plain", ".")
+}
+
+func (Run) Image(name string) error {
+	svcName := fmt.Sprintf("%s_%s_svc", ProjectName, name)
+	sh.RunV("docker", "container", "stop", svcName)
+	sh.RunV("docker", "container", "rm", svcName)
+
+	return sh.RunV("docker", "run", "-p", "50051:50051", "--name", svcName, genURL(name))
+}
+
+func buildDataSvc() error {
+	return Build{}.Service("data")
 }
 
 func (Build) All() error {
 	mg.Deps(
 		buildRoot,
+		// buildDataSvc,
 	)
 	return nil
 }

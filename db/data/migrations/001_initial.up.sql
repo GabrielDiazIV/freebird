@@ -1,4 +1,4 @@
-CREATE TABLE birds(
+CREATE TABLE IF NOT EXISTS birds(
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
 	entity_type INT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE birds(
 	img_url TEXT NOT NULL
 );
 
-CREATE TABLE tweets(
+CREATE TABLE IF NOT EXISTS tweets(
 	id SERIAL PRIMARY KEY,
 	body TEXT NOT NULL,
 	bird_fk INT NOT NULL REFERENCES birds(id),
