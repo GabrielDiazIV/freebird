@@ -5,29 +5,31 @@ option go_package = "app/api/data";
 package data;
 
 service Data {
-	rpc TweetStream(TweetStreamRequest) returns (stream TweetStreamResponse) {}
+    rpc TweetStream(TweetStreamRequest) returns (stream Bird) {}
 
-	rpc EntityData(EntityRequest) returns (EntityResponse) {}
+    rpc BirdData(BirdRequest) returns (Bird) {}
+    rpc AllBirds(BirdsRequest) returns (Birds) {}
 }
 
-enum FreebirdEntity {
-	SHILL = 0;
-	COMPANY = 1;
+enum Bird_Type {
+    SHILL = 0;
+    COMPANY = 1;
 }
 
-message TweetStreamRequest {
+message Bird {
+    int32 id = 1;
+    string name = 2;
+    Bird_Type type = 3;
+    int32 bird_fk = 4;
+    float score = 5;
+    int32 n_positive = 6;
+    int32 n_negative = 7;
+    string img_url = 8;
 }
 
-message TweetStreamResponse {
-	FreebirdEntity entity_type = 1;
-	string entity_name = 2;
-}
+message Birds { repeated Bird birds = 1; }
 
-message EntityRequest {
-	FreebirdEntity entity_type = 1;
-	string entity_name = 2;
-}
+message TweetStreamRequest {}
+message BirdsRequest {}
 
-message EntityResponse {
-	string gaming = 1;
-}
+message BirdRequest { int32 bird_id = 1; }
