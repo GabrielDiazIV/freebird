@@ -3,6 +3,7 @@
 package main
 
 import (
+	"Freebird/app/system/env"
 	"fmt"
 
 	"github.com/joho/godotenv"
@@ -16,6 +17,7 @@ const (
 
 type (
 	Run      mg.Namespace
+	Migrate  mg.Namespace
 	Test     mg.Namespace
 	Build    mg.Namespace
 	Util     mg.Namespace
@@ -32,6 +34,17 @@ func (Generate) SQL() error {
 
 func (Generate) GRPC(name string) error {
 	return sh.RunV("protoc", "--go_out=.", "--go-grpc_out=.", fmt.Sprintf("./app/api/proto/%s.proto", name))
+}
+
+func (Migrate) DataDB() error {
+	if err := godotenv.Load(".env"); err != nil {
+		return err
+	}
+
+	c := env.GetConfig()
+	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/postgres?sslmode=disable", c.POSTGRES_USER, c.POSTGRES_PASS, c.POSTGRES_HOST, c.POSTGRES_PORT)
+	fmt.Println(connString)
+	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", connString, "up")
 }
 
 func (Run) Service(name string) error {
