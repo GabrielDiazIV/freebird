@@ -44,7 +44,6 @@ func (Migrate) DataDB() error {
 
 	c := env.GetConfig()
 	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/postgres?sslmode=disable", c.POSTGRES_USER, c.POSTGRES_PASS, c.POSTGRES_HOST, c.POSTGRES_PORT)
-	fmt.Println(connString)
 	return sh.RunV("migrate", "-source", "file://db/data/migrations", "-database", connString, "up")
 }
 
