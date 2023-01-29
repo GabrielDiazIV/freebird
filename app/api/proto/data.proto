@@ -19,10 +19,8 @@ message TweetStreamRequest {
 }
 
 message TweetStreamResponse {
-	string entity_name = 1;
-	float entity_sentiment = 2;
-	string entity_image = 3;
-	FreebirdEntity entity_type = 4;
+	FreebirdEntity entity_type = 1;
+	string entity_name = 2;
 }
 
 message EntityRequest {

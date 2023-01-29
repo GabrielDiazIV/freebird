@@ -1,12 +1,13 @@
 package notify
 
 import (
-	"Freebird/app/datastore/data"
-	"Freebird/app/domain"
-	"Freebird/app/system/log"
 	"context"
 	"encoding/json"
 	"sync"
+
+	"Freebird/app/datastore/data"
+	"Freebird/app/domain"
+	"Freebird/app/system/log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -21,7 +22,6 @@ type NotifySrvc struct {
 }
 
 func Notify() *NotifySrvc {
-
 	notifyInst = &NotifySrvc{
 		pool: domain.NewPool(),
 	}
@@ -65,6 +65,7 @@ func notifyLoop(c *pgxpool.Conn) {
 			log.Error("%v", err)
 			continue
 		}
+		log.Info("ok")
 
 		for _, userChan := range notifyInst.pool.UserChans() {
 			userChan <- &bird

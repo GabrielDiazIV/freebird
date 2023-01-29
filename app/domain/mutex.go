@@ -1,26 +1,26 @@
 package domain
 
 import (
-	"Freebird/app/datastore/data"
 	"sync"
+
+	"Freebird/app/datastore/data"
 )
 
 type UserPool struct {
-	mu    sync.RWMutex
+	mu    *sync.RWMutex
 	users map[chan<- *data.Bird]bool
 }
 
 func NewPool() *UserPool {
 	return &UserPool{
-		mu:    sync.RWMutex{},
+		mu:    &sync.RWMutex{},
 		users: make(map[chan<- *data.Bird]bool),
 	}
-
 }
 
 func (u *UserPool) UserChans() []chan<- *data.Bird {
 	u.mu.RLock()
-	defer u.mu.Unlock()
+	defer u.mu.RUnlock()
 
 	userChans := make([]chan<- *data.Bird, len(u.users))
 
