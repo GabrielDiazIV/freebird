@@ -10,13 +10,14 @@ import (
 )
 
 func main() {
-	lis, err := net.Listen("tcp", ":9090")
+	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
 		panic(err)
 	}
 	s := grpc.NewServer()
-	data.RegisterDataServer(s, data.NewServer())
-	log.Info("listening on port 9090")
+	serv := data.NewServer()
+	data.RegisterDataServer(s, serv)
+	log.Info("listening on port %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		panic(err)
 	}
