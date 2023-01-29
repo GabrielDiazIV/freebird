@@ -81,7 +81,7 @@ func (Run) Envoy() error {
 	sh.RunV("docker", "container", "stop", "freebird_envoy")
 	sh.RunV("docker", "container", "rm", "freebird_envoy")
 
-	return sh.RunV("docker", "run", "-p", "9901:9901", "-p", "8080:8080", "--name=freebird_envoy", "freebird/envoy", "-c", "/etc/envoy/envoy.yaml", "-l", "off", "--component-log-level", "upstream:debug,connection:trace")
+	return sh.RunV("docker", "run", "-p", "9901:9901", "-p", "8080:8080", "--net", "host", "--name=freebird_envoy", "freebird/envoy" /*, "-c", "/etc/envoy/envoy.yaml", "-l", "off", "--component-log-level", "upstream:debug,connection:trace"*/)
 }
 
 func buildRoot() error {
@@ -98,7 +98,7 @@ func (Run) Image(name string) error {
 	sh.RunV("docker", "container", "stop", svcName)
 	sh.RunV("docker", "container", "rm", svcName)
 
-	return sh.RunV("docker", "run", "-p", "9090:9090", "--name", svcName, genURL(name))
+	return sh.RunV("docker", "run", "-p", "50051:50051", "--name", svcName, genURL(name))
 }
 
 func buildDataSvc() error {
