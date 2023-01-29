@@ -12,7 +12,8 @@ class LiveSource:
         return { "Authorization": f"Bearer {self._bearer}" }
 
     def stream(self):
-        res = requests.get("https://api.twitter.com/2/tweets/search/stream", headers=self.__auth(), stream=True)
+        params = {'expansions' : 'author_id', 'tweet.fields' : 'text,created_at'}
+        res = requests.get("https://api.twitter.com/2/tweets/search/stream", headers=self.__auth(), stream=True, params=params)
         if res.status_code != 200:
             raise Exception(f"stream did not connect: {res.text}")
         return res
@@ -46,10 +47,11 @@ class LiveSource:
                 "add": self._rules,
         }
         res = requests.post("https://api.twitter.com/2/tweets/search/stream/rules", json=rules_payload, headers=self.__auth())
-        if res.status_code != 200:
+        print(res.status_code)
+        if res.status_code != 201:
             raise Exception(f"failed to upload new rules: {res.text}")
 
-    def add_rule(self, rule):
+    def add_rule(self, rule, tag):
         if len(self._rules) >= 25:
             raise Exception("a maximum of 25 rules may exist on a stream")
         if len(rule) > 512:
@@ -57,7 +59,7 @@ class LiveSource:
         if not isinstance(rule, str):
             raise Exception("rules must be strings")
 
-        self._rules.append({ "value": rule })
+        self._rules.append({ "value": rule, "tag": tag})
 
     def start(self, classify):
         self.__submit_rules()

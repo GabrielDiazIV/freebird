@@ -27,4 +27,5 @@ type Tweet struct {
 	AuthorUsername string
 	PostTime       time.Time
 	Score          float64
+	Certainty      float64
 }

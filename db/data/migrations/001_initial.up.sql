@@ -16,7 +16,8 @@ CREATE TABLE tweets(
 	author_name TEXT NOT NULL,
 	author_username TEXT NOT NULL,
 	post_time TIMESTAMP WITH TIME ZONE NOT NULL,
-	score FLOAT NOT NULL
+	score FLOAT NOT NULL,
+	certainty FLOAT NOT NULL
 );
 
 CREATE OR REPLACE FUNCTION notify_tweet() RETURNS TRIGGER AS $$
